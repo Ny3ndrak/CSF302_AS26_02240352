@@ -1,0 +1,141 @@
+"""Compare traditional matrix multiplication with Strassen's algorithm."""
+
+import random
+import time
+
+
+# ---------------------------------------------------------
+# 1. TRADITIONAL MATRIX MULTIPLICATION (Triple Nested Loop)
+# ---------------------------------------------------------
+def traditional_multiply(first, second):
+    """Multiply two square matrices using three loops."""
+    size = len(first)
+    result = [[0] * size for _ in range(size)]
+
+    for i in range(size):
+        for j in range(size):
+            total = 0
+            for k in range(size):
+                total += first[i][k] * second[k][j]
+            result[i][j] = total
+    return result
+
+
+# ---------------------------------------------------------
+# 2. STRASSEN'S ALGORITHM (Divide and Conquer)
+# ---------------------------------------------------------
+def add_matrix(first, second):
+    return [[a + b for a, b in zip(row_a, row_b)]
+            for row_a, row_b in zip(first, second)]
+
+
+def subtract_matrix(first, second):
+    return [[a - b for a, b in zip(row_a, row_b)]
+            for row_a, row_b in zip(first, second)]
+
+
+def split_matrix(matrix):
+    """Return the four equal parts of a matrix."""
+    middle = len(matrix) // 2
+    top, bottom = matrix[:middle], matrix[middle:]
+    return (
+        [row[:middle] for row in top],
+        [row[middle:] for row in top],
+        [row[:middle] for row in bottom],
+        [row[middle:] for row in bottom],
+    )
+
+
+def combine_quadrants(top_left, top_right, bottom_left, bottom_right):
+    top = [left + right for left, right in zip(top_left, top_right)]
+    bottom = [left + right for left, right in zip(bottom_left, bottom_right)]
+    return top + bottom
+
+
+def strassen_multiply(first, second):
+    n = len(first)
+
+    # Base case: 1x1 matrix -> ordinary scalar multiplication
+    if n == 1:
+        return [[first[0][0] * second[0][0]]]
+
+    # Step 1: split both matrices into 4 quadrants each
+    A11, A12, A21, A22 = split_matrix(first)
+    B11, B12, B21, B22 = split_matrix(second)
+
+    # Step 2: compute the 7 Strassen products (recursively)
+    M1 = strassen_multiply(add_matrix(A11, A22), add_matrix(B11, B22))
+    M2 = strassen_multiply(add_matrix(A21, A22), B11)
+    M3 = strassen_multiply(A11, subtract_matrix(B12, B22))
+    M4 = strassen_multiply(A22, subtract_matrix(B21, B11))
+    M5 = strassen_multiply(add_matrix(A11, A12), B22)
+    M6 = strassen_multiply(subtract_matrix(A21, A11), add_matrix(B11, B12))
+    M7 = strassen_multiply(subtract_matrix(A12, A22), add_matrix(B21, B22))
+
+    # Step 3: combine the 7 products into the 4 result quadrants
+    C11 = add_matrix(subtract_matrix(add_matrix(M1, M4), M5), M7)
+    C12 = add_matrix(M3, M5)
+    C21 = add_matrix(M2, M4)
+    C22 = add_matrix(subtract_matrix(add_matrix(M1, M3), M2), M6)
+
+    # Step 4: merge quadrants into the final n x n matrix
+    return combine_quadrants(C11, C12, C21, C22)
+
+
+# ---------------------------------------------------------
+# 3. HELPER FUNCTIONS
+# ---------------------------------------------------------
+def generate_random_matrix(n, low=0, high=9):
+    return [[random.randint(low, high) for _ in range(n)] for _ in range(n)]
+
+
+def print_matrix(M, label=""):
+    if label:
+        print(label)
+    for row in M:
+        print(row)
+    print()
+
+
+def matrices_equal(A, B):
+    n = len(A)
+    for i in range(n):
+        for j in range(n):
+            if A[i][j] != B[i][j]:
+                return False
+    return True
+
+
+# ---------------------------------------------------------
+# 4. MAIN DRIVER: RUN BOTH ALGORITHMS AND COMPARE
+# ---------------------------------------------------------
+def main():
+    n = 8  # must be a power of 2 (2, 4, 8, 16, 32, 64, 128 ...)
+
+    A = generate_random_matrix(n)
+    B = generate_random_matrix(n)
+
+    print_matrix(A, "Matrix A:")
+    print_matrix(B, "Matrix B:")
+
+    # --- Traditional method ---
+    start = time.perf_counter()
+    C_traditional = traditional_multiply(A, B)
+    time_traditional = time.perf_counter() - start
+
+    # --- Strassen's method ---
+    start = time.perf_counter()
+    C_strassen = strassen_multiply(A, B)
+    time_strassen = time.perf_counter() - start
+
+    print_matrix(C_traditional, "Result (Traditional):")
+    print_matrix(C_strassen, "Result (Strassen):")
+
+    match = matrices_equal(C_traditional, C_strassen)
+    print(f"Results match: {match}")
+    print(f"Traditional time: {time_traditional:.6f} seconds")
+    print(f"Strassen time:    {time_strassen:.6f} seconds")
+
+
+if __name__ == "__main__":
+    main()

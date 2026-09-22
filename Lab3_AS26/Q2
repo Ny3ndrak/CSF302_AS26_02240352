@@ -1,0 +1,106 @@
+"""Compare ordinary and Karatsuba multiplication for large numbers."""
+
+import random
+import time
+
+
+def traditional_multiply(first, second):
+    """Multiply two positive integer strings digit by digit."""
+    first = first[::-1]
+    second = second[::-1]
+    result = [0] * (len(first) + len(second))
+
+    for i, digit_a in enumerate(first):
+        for j, digit_b in enumerate(second):
+            result[i + j] += int(digit_a) * int(digit_b)
+
+    carry = 0
+    for index, value in enumerate(result):
+        total = value + carry
+        result[index] = total % 10
+        carry = total // 10
+    while carry:
+        result.append(carry % 10)
+        carry //= 10
+
+    while len(result) > 1 and result[-1] == 0:
+        result.pop()
+    return ''.join(map(str, result[::-1]))
+def next_power_of_two(n):
+    power = 1
+    while power < n:
+        power *= 2
+    return power
+
+
+def add_strings(a, b):
+    return str(int(a) + int(b))
+
+
+def subtract_strings(a, b):
+    return str(int(a) - int(b))
+
+
+def karatsuba_multiply(first, second):
+    if len(first) == 1 or len(second) == 1:
+        return str(int(first) * int(second))
+
+    size = next_power_of_two(max(len(first), len(second)))
+    first = first.zfill(size)
+    second = second.zfill(size)
+
+    middle = size // 2
+    high_a, low_a = first[:middle], first[middle:]
+    high_b, low_b = second[:middle], second[middle:]
+
+    low_product = karatsuba_multiply(low_a, low_b)
+    high_product = karatsuba_multiply(high_a, high_b)
+    middle_product = karatsuba_multiply(
+        add_strings(high_a, low_a), add_strings(high_b, low_b)
+    )
+    middle_term = subtract_strings(
+        subtract_strings(middle_product, high_product), low_product
+    )
+    result = (int(high_product) * 10 ** (2 * middle)
+              + int(middle_term) * 10 ** middle + int(low_product))
+    return str(result)
+
+
+def random_number(digits):
+    return str(random.randint(1, 9)) + ''.join(
+        str(random.randint(0, 9)) for _ in range(digits - 1)
+    )
+
+
+# ---------------------------------------------------------
+# 4. MAIN DRIVER: RUN BOTH ALGORITHMS AND COMPARE
+# ---------------------------------------------------------
+def main():
+    test_sizes = [8, 16, 32, 64, 128]
+
+    for digits in test_sizes:
+        x = random_number(digits)
+        y = random_number(digits)
+
+        start = time.perf_counter()
+        result_traditional = traditional_multiply(x, y)
+        time_traditional = time.perf_counter() - start
+
+        start = time.perf_counter()
+        result_karatsuba = karatsuba_multiply(x, y)
+        time_karatsuba = time.perf_counter() - start
+
+        match = int(result_traditional) == int(result_karatsuba)
+
+        print(f"--- {digits}-digit numbers ---")
+        print(f"x = {x}")
+        print(f"y = {y}")
+        print(f"Traditional result: {result_traditional}")
+        print(f"Karatsuba result:   {result_karatsuba}")
+        print(f"Results match: {match}")
+        print(f"Traditional time: {time_traditional:.6f}s | Karatsuba time: {time_karatsuba:.6f}s")
+        print()
+
+
+if __name__ == "__main__":
+    main()
