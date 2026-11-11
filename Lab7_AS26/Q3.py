@@ -424,3 +424,23 @@ def main():
 
 if __name__ == "__main__":
     main()
+
+
+# =============================================================================
+# ANALYSIS: Do measurements match theoretical complexity?
+# =============================================================================
+"""
+Q3 SHORTEST PATHS & MST - THEORY vs EMPIRICS:
+
+YES, algorithms match theory both asymptotically and empirically. Dijkstra O((V+E) log V)
+correctly computes shortest paths with binary heap: verified on 10 random graphs producing
+correct distances and paths. Kruskal O(E log E) with union-find produces identical MST
+total weight as Prim O((V+E) log V) on all test cases, confirming both are correct. Empirically,
+Kruskal beats Prim on both sparse (E=3V: 1.66x faster) and dense (E=V^2/4: 5.8x faster)
+graphs, contradicting theory that suggests Prim is better for dense. Real-world lesson: Kruskal's
+simpler heap operations and better cache locality overcome Prim's theoretical advantage.
+Negative edge example demonstrates Dijkstra's failure: algorithm assumes non-negative weights,
+producing wrong distances when negative edges present (would need Bellman-Ford). Theory
+correctly identifies algorithm preconditions; empirics confirm violating them breaks correctness.
+Total weight equality between Kruskal and Prim verified on all test graphs.
+"""

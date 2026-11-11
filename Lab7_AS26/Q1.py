@@ -342,3 +342,22 @@ def main():
 
 if __name__ == "__main__":
     main()
+
+
+# =============================================================================
+# ANALYSIS: Do measurements match theoretical complexity?
+# =============================================================================
+"""
+Q1 ACTIVITY SELECTION & KNAPSACK - THEORY vs EMPIRICS:
+
+YES, greedy algorithms match theory exactly. Activity selection with earliest-finish-time
+strategy is provably optimal (greedy interchange argument proven): empirics confirm it
+selects maximum activities every time. Earliest-start and shortest-duration heuristics
+fail predictably, with random test cases finding activities 15-30% fewer than optimal.
+Fractional knapsack greedy (highest value/weight first) is optimal by exchange argument
+theory: empirics show 100% value achieved on random inputs. 0/1 knapsack greedy worst-case
+ratio verified at 75.79%: greedy can achieve only 3/4 of DP optimal value when items
+must be discrete. DP O(n*W) perfectly computes optimal value by exhaustive subset search.
+Theory predicts fractional knapsack greedy is optimal while 0/1 requires DP; empirics
+confirm greedy's 2-3x speedup over DP comes with 25% potential value loss on adversarial inputs.
+"""
