@@ -1,0 +1,34 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="900" height="440" viewBox="0 0 900 440" role="img" aria-labelledby="title description">
+  <title id="title">Cutoff benchmark on 100,000 random values</title>
+  <desc id="description">Median runtime across nine runs for six insertion-sort cutoffs, with Python sorted() as a reference.</desc>
+  <rect width="900" height="440" fill="white"/>
+  <text x="450" y="27" text-anchor="middle" font-family="sans-serif" font-size="18">100,000 random values: cutoff and sorted() comparison</text>
+  <g stroke="#ddd" stroke-width="1">
+    <path d="M100 380H820 M100 313.3H820 M100 246.7H820 M100 180H820 M100 113.3H820"/>
+  </g>
+  <g fill="#333" font-family="sans-serif" font-size="12">
+    <text x="88" y="384" text-anchor="end">0.0</text>
+    <text x="88" y="317.3" text-anchor="end">0.1</text>
+    <text x="88" y="250.7" text-anchor="end">0.2</text>
+    <text x="88" y="184" text-anchor="end">0.3</text>
+    <text x="88" y="117.3" text-anchor="end">0.4</text>
+    <text x="140" y="402" text-anchor="middle">1</text>
+    <text x="250" y="402" text-anchor="middle">4</text>
+    <text x="360" y="402" text-anchor="middle">8</text>
+    <text x="470" y="402" text-anchor="middle">16</text>
+    <text x="580" y="402" text-anchor="middle">32</text>
+    <text x="690" y="402" text-anchor="middle">64</text>
+    <text x="800" y="402" text-anchor="middle">sorted()</text>
+    <text x="450" y="429" text-anchor="middle">Insertion-sort cutoff / reference</text>
+    <text x="20" y="240" text-anchor="middle" transform="rotate(-90 20 240)">Median seconds</text>
+  </g>
+  <polyline fill="none" stroke="#1769aa" stroke-width="2.5" points="140,118.6 250,142.4 360,145.3 470,160.4 580,151.9 690,136.2"/>
+  <g fill="#1769aa">
+    <circle cx="140" cy="118.6" r="5"/><circle cx="250" cy="142.4" r="5"/><circle cx="360" cy="145.3" r="5"/><circle cx="470" cy="160.4" r="5"/><circle cx="580" cy="151.9" r="5"/><circle cx="690" cy="136.2" r="5"/>
+  </g>
+  <circle cx="800" cy="363.5" r="5" fill="#34834b"/>
+  <g font-family="sans-serif" font-size="12" fill="#333">
+    <path d="M610 55h24" stroke="#1769aa" stroke-width="2.5"/><text x="640" y="59">Improved quicksort (median of 9)</text>
+    <circle cx="622" cy="76" r="5" fill="#34834b"/><text x="640" y="80">Python sorted() (median of 9)</text>
+  </g>
+</svg>
